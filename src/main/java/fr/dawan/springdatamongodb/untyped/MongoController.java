@@ -1,5 +1,6 @@
 package fr.dawan.springdatamongodb.untyped;
 
+import fr.dawan.springdatamongodb.untyped.helper.QueryBuilder;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -26,20 +27,7 @@ public class MongoController {
 
     @GetMapping("findFiltered")
     public List<Document> findFiltered(@PathVariable String collection, @RequestParam Map<String,String> params ) {
-        List<Criteria> list = params
-                .entrySet()
-                .stream()
-                .map(e -> {
-                    String[] keyAndMethod = e.getKey().split("\\.");
-                    String key = keyAndMethod[0];
-                    String method = keyAndMethod.length > 1 ? keyAndMethod[1] : "is";
-                    System.out.println("key = \u001B[31m" + key + "\u001B[0m");
-                    System.out.println("method = \u001B[31m" + method + "\u001B[0m");
-                    return new Criteria(e.getKey()).is(e.getValue());
-                })
-                .toList();
-        Criteria filter = new Criteria().andOperator(list);
-        return template.find(new Query(filter), Document.class, collection);
+        return template.find(QueryBuilder.build(params), Document.class, collection);
     }
 
     /*@GetMapping("byStatus/{status}")
