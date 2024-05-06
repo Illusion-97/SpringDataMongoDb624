@@ -35,7 +35,7 @@ public class MongoController {
     @GetMapping("byStatusAndQtyLt/{status}/{qty}")
     public List<Document> findByStatusAndQtyLessThan(@PathVariable String collection, @PathVariable String status, @PathVariable int qty) {
         Criteria filterStatus = new Criteria("status").is(status);
-        Criteria filterQty = new Criteria("qty").lt(50);
+        Criteria filterQty = new Criteria("qty").lt(qty);
         Criteria filter = new Criteria().andOperator(filterStatus,filterQty);
         Query query = new Query(filter);
         return template.find(query, Document.class, collection);
